@@ -15,7 +15,11 @@ response = openai.ChatCompletion.create(
         {
             "role": "user",
             "content": "你的模型是基于GPT-3还是GPT-3.5"
-        }
+        },
+        {
+            "role": "user",
+            "content": "周末上课吗？"  # 问问题。可以改改试试
+        },
     ],
 )
 
