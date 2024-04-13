@@ -7,6 +7,20 @@ _ = load_dotenv(find_dotenv())
 
 client = OpenAI()
 
+# 对话流程举例：
+#
+# | 对话轮次 | 用户提问              | NLU               | DST                         | Policy                 | NLG                                       |
+# | -------- | --------------------- | ----------------- | --------------------------- | ---------------------- | ----------------------------------------- |
+# | 1        | 流量大的套餐有什么    | sort_descend=data | sort_descend=data           | inform(name=无限套餐)  | 我们现有无限套餐，流量不限量，每月 300 元 |
+# | 2        | 月费 200 以下的有什么 | price<200         | sort_descend=data price<200 | inform(name=劲爽套餐)  | 推荐劲爽套餐，流量 100G，月费 180 元      |
+# | 3        | 算了，要最便宜的      | sort_ascend=price | sort_ascend=price           | inform(name=经济套餐)  | 最便宜的是经济套餐，每月 50 元，10G 流量  |
+# | 4        | 有什么优惠吗          | request(discount) | request(discount)           | confirm(status=优惠大) | 您是在找优惠吗                            |
+#
+# 核心思路：
+# 1. 把输入的自然语言对话，转成结构化的表示
+# 2. 从结构化的表示，生成策略
+# 3. 把策略转成自然语言输出
+
 # 1. Goal 目标
 goal = """
 你的任务是识别用户对手机流量套餐产品的选择条件。
